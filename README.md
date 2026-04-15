@@ -1,112 +1,148 @@
-#STM32 RC Controller Firmware
-----------------------------------------------
-    A multi-channel RC transmitter firmware for STM32 supporting USB HID Joystick and SBUS output, featuring DMA-based ADC sampling, median + EMA filtering, and per-channel calibration.
+# STM32 RC Controller Firmware
 
-#Features
------------------------------------------------
-    --> USB HID Joystick — plug-and-play with simulators, games, and GCS software
+> A multi-channel RC transmitter firmware for STM32 supporting USB HID Joystick and SBUS output,
+> featuring DMA-based ADC sampling, median + EMA filtering, and per-channel calibration.
 
-    --> SBUS Output — 16-channel, 11-bit resolution over UART (100k baud, inverted)
+![Platform](https://img.shields.io/badge/Platform-STM32F1-blue)
+![Language](https://img.shields.io/badge/Language-C-lightgrey)
+![IDE](https://img.shields.io/badge/IDE-STM32CubeIDE-green)
+![License](https://img.shields.io/badge/License-MIT-yellow)
 
-    --> 6-channel ADC input — 4 joystick axes + 2 potentiometers
+---
 
-    --> Digital inputs — 2× 3-way switches, 2× toggle switches, 4× push buttons
+## Table of Contents
 
-    --> Median + EMA filtering for spike removal and smooth response
+- [Features](#features)
+- [System Architecture](#system-architecture)
+- [Input Mapping](#input-mapping)
+- [SBUS Protocol](#sbus-protocol)
+- [Hardware Requirements](#hardware-requirements)
+- [Project Structure](#project-structure)
+- [Build & Flash](#build--flash)
+- [Debugging](#debugging)
+- [Roadmap](#roadmap)
+- [Author](#author)
 
-    --> Deadzone & center calibration with auto-detect at startup
+---
 
-    --> DMA-based continuous ADC sampling for low-latency control loop
+## Features
 
-# System Architecture
---------------------------------------------------
-text
+| Feature | Description |
+|---|---|
+| 🎮 USB HID Joystick | Plug-and-play with simulators, games, and GCS software |
+| 📡 SBUS Output | 16-channel, 11-bit resolution over UART (100k baud, inverted) |
+| 🎛️ 6-Channel ADC | 4 joystick axes + 2 potentiometers via DMA circular sampling |
+| 🔘 Digital Inputs | 2× 3-way switches, 2× toggle switches, 4× push buttons |
+| 🧹 Dual Filtering | Median filter (spike removal) + EMA filter (smooth response) |
+| 📐 Calibration | Auto center detection at startup with configurable deadzone |
+| ⚡ DMA Sampling | Continuous circular ADC acquisition for low-latency control loop |
+
+---
+
+## System Architecture
+
+```text
 ADC (DMA) → Median Filter → EMA Filter → Calibration → Mapping
                                                   ├── USB HID Joystick
                                                   └── SBUS Encoder → UART TX
+```
 
-# Input Mapping
---------------------------------
-Joystick Axes
-Axis	Channel	Function
-X	CH4	Roll
-Y	CH3	Pitch
-Z	CH1	Throttle
-RZ	CH2	Yaw
-Potentiometers
-Input	Channel
-POT1	CH5
-POT2	CH6
-Switches & Buttons
-Input	Channel
-3-way switch × 2	CH7, CH8
-Toggle switch × 2	CH9
-Push button × 4	CH10 – CH11
-📡 SBUS Protocol
-Parameter	Value
-Baud Rate	100,000
-Frame Size	25 bytes
-Channels	16 (11-bit each)
-Range	172 – 1811
-Logic	Inverted UART
+---
 
-# Hardware Requirements
-----------------------------------------
-    STM32F1 series (or compatible)
+## Input Mapping
 
-    2× Analog joystick modules
+### Joystick Axes
 
-    2× Potentiometers
+| Axis | Channel | Function |
+|------|---------|----------|
+| X    | CH4     | Roll     |
+| Y    | CH3     | Pitch    |
+| Z    | CH1     | Throttle |
+| RZ   | CH2     | Yaw      |
 
-    2× 3-way switches, 2× toggle switches, 4× push buttons
+### Potentiometers
 
-    USB connection (for HID mode)
+| Input | Channel |
+|-------|---------|
+| POT1  | CH5     |
+| POT2  | CH6     |
 
-    SBUS-compatible flight controller
+### Switches & Buttons
 
-# Project Structure
----------------------------------------
-text
+| Input             | Channel     |
+|-------------------|-------------|
+| 3-way switch × 2  | CH7, CH8    |
+| Toggle switch × 2 | CH9         |
+| Push button × 4   | CH10 – CH11 |
+
+---
+
+## SBUS Protocol
+
+| Parameter  | Value            |
+|------------|------------------|
+| Baud Rate  | 100,000          |
+| Frame Size | 25 bytes         |
+| Channels   | 16 (11-bit each) |
+| Range      | 172 – 1811       |
+| Logic      | Inverted UART    |
+
+---
+
+## Hardware Requirements
+
+- STM32F1 series microcontroller (or compatible)
+- 2× Analog joystick modules
+- 2× Potentiometers
+- 2× 3-way switches, 2× toggle switches, 4× push buttons
+- USB connection (for HID mode)
+- SBUS-compatible flight controller
+
+---
+
+## Project Structure
+
 ├── Core/
-│   ├── Src/
-│   │   ├── main.c
-│   │   └── usb_device.c
-│   └── Inc/
+│ ├── Src/
+│ │ ├── main.c
+│ │ └── usb_device.c
+│ └── Inc/
 ├── USB_DEVICE/
 └── Drivers/
 
-# Build & Flash
-------------------------------------------
-    Open the project in STM32CubeIDE
 
-    Build the project (Ctrl+B)
+---
 
-    Flash to your STM32 board
+## Build & Flash
 
-    Connect:
+1. Open the project in **STM32CubeIDE**
+2. Build — `Project → Build All` or `Ctrl+B`
+3. Flash to your STM32 board via ST-Link
+4. Connect peripherals:
+   - **USB** → PC (registers as HID joystick automatically)
+   - **UART TX** → Flight controller SBUS input
 
-        USB → PC (registers as HID joystick)
+---
 
-        UART TX → Flight controller SBUS input
+## Debugging
 
-# Debugging
------------------------------------------
-    Optional UART debug print output
+- Optional UART debug output for live ADC values and channel data
+- Onboard LED toggles on every control loop cycle to confirm activity
 
-    Onboard LED toggles to indicate control loop activity
+---
 
-# Roadmap
---------------------------------------
-    EEPROM / Flash calibration storage
+## Roadmap
 
-    RF transmission integration (SX1280 / FLRC / LoRa)
+- [ ] EEPROM / Flash-based calibration storage
+- [ ] RF transmission integration (SX1280 / FLRC / LoRa)
+- [ ] Video + telemetry pipeline integration
+- [ ] Kalman filter for advanced input smoothing
 
-    Video + telemetry integration
+---
 
-    Kalman filter for advanced smoothing
+## Author
 
-👨‍💻 Author
-----------------------------------------
-Sathya — Embedded Systems Developer
+**Sathya** — Embedded Systems Developer
 
-If you find this project useful, please consider giving it a ⭐ on GitHub!
+> Built with for the drone and RC community.
+> If you found this project helpful, please consider giving it a ⭐ on GitHub!
