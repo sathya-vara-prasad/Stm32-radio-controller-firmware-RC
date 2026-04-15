@@ -1,5 +1,5 @@
 # STM32 RC Controller Firmware
-
+------------------------------------
 > A multi-channel RC transmitter firmware for STM32 supporting USB HID Joystick and SBUS output,
 > featuring DMA-based ADC sampling, median + EMA filtering, and per-channel calibration.
 
@@ -11,7 +11,7 @@
 ---
 
 ## Table of Contents
-
+-----------------------------------------
 - [Features](#features)
 - [System Architecture](#system-architecture)
 - [Input Mapping](#input-mapping)
@@ -26,21 +26,21 @@
 ---
 
 ## Features
-
+--------------------------------------
 | Feature | Description |
 |---|---|
-| 🎮 USB HID Joystick | Plug-and-play with simulators, games, and GCS software |
-| 📡 SBUS Output | 16-channel, 11-bit resolution over UART (100k baud, inverted) |
-| 🎛️ 6-Channel ADC | 4 joystick axes + 2 potentiometers via DMA circular sampling |
-| 🔘 Digital Inputs | 2× 3-way switches, 2× toggle switches, 4× push buttons |
-| 🧹 Dual Filtering | Median filter (spike removal) + EMA filter (smooth response) |
-| 📐 Calibration | Auto center detection at startup with configurable deadzone |
-| ⚡ DMA Sampling | Continuous circular ADC acquisition for low-latency control loop |
+|  USB HID Joystick | Plug-and-play with simulators, games, and GCS software |
+|  SBUS Output | 16-channel, 11-bit resolution over UART (100k baud, inverted) |
+|  6-Channel ADC | 4 joystick axes + 2 potentiometers via DMA circular sampling |
+|  Digital Inputs | 2× 3-way switches, 2× toggle switches, 4× push buttons |
+|  Dual Filtering | Median filter (spike removal) + EMA filter (smooth response) |
+|  Calibration | Auto center detection at startup with configurable deadzone |
+|  DMA Sampling | Continuous circular ADC acquisition for low-latency control loop |
 
 ---
 
 ## System Architecture
-
+------------------------------------
 ```text
 ADC (DMA) → Median Filter → EMA Filter → Calibration → Mapping
                                                   ├── USB HID Joystick
@@ -50,7 +50,7 @@ ADC (DMA) → Median Filter → EMA Filter → Calibration → Mapping
 ---
 
 ## Input Mapping
-
+-------------------------------
 ### Joystick Axes
 
 | Axis | Channel | Function |
@@ -90,7 +90,7 @@ ADC (DMA) → Median Filter → EMA Filter → Calibration → Mapping
 ---
 
 ## Hardware Requirements
-
+----------------------------------------------------
 - STM32F1 series microcontroller (or compatible)
 - 2× Analog joystick modules
 - 2× Potentiometers
@@ -101,7 +101,7 @@ ADC (DMA) → Median Filter → EMA Filter → Calibration → Mapping
 ---
 
 ## Project Structure
-
+----------------------------------------------
 ├── Core/
 │ ├── Src/
 │ │ ├── main.c
@@ -114,7 +114,7 @@ ADC (DMA) → Median Filter → EMA Filter → Calibration → Mapping
 ---
 
 ## Build & Flash
-
+--------------------------------------------------
 1. Open the project in **STM32CubeIDE**
 2. Build — `Project → Build All` or `Ctrl+B`
 3. Flash to your STM32 board via ST-Link
@@ -125,14 +125,14 @@ ADC (DMA) → Median Filter → EMA Filter → Calibration → Mapping
 ---
 
 ## Debugging
-
+--------------------------------------------------------
 - Optional UART debug output for live ADC values and channel data
 - Onboard LED toggles on every control loop cycle to confirm activity
 
 ---
 
 ## Roadmap
-
+---------------------------------------------------------
 - [ ] EEPROM / Flash-based calibration storage
 - [ ] RF transmission integration (SX1280 / FLRC / LoRa)
 - [ ] Video + telemetry pipeline integration
@@ -141,7 +141,7 @@ ADC (DMA) → Median Filter → EMA Filter → Calibration → Mapping
 ---
 
 ## Author
-
+----------------------------------
 **Sathya** — Embedded Systems Developer
 
 > Built with for the drone and RC community.
